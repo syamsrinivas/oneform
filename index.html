@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONEFORM — One-Hand Transformable Personal Workspace</title>
+    <meta name="description" content="ONEFORM: A concept-stage Product Design and Innovation (PDI) project. One Object. One Hand. One Transformation. Premium travel case that transforms into an ergonomic personal workspace through mechanical intelligence.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Cinematic Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-content">
+            <div class="loader-badge">PDI CONCEPT</div>
+            <div class="loader-brand">ONEFORM</div>
+            <div class="loader-tagline">ONE OBJECT. ONE HAND. ONE TRANSFORMATION.</div>
+            <div class="loader-bar-container">
+                <div class="loader-bar-fill" id="loader-fill"></div>
+            </div>
+            <div class="loader-status" id="loader-status">Initializing 3D Engine…</div>
+        </div>
+    </div>
+
+    <!-- 3D WebGL Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Real-time 3D Exploded Layer Technical Callouts -->
+    <div id="labels-overlay"></div>
+
+    <!-- UI Overlay Layer -->
+    <div class="ui-overlay">
+        
+        <!-- Top Header Navigation -->
+        <header class="top-header interactive">
+            <div class="brand-group">
+                <span class="brand-badge">PDI CONCEPT</span>
+                <h1 class="brand-title">ONEFORM</h1>
+                <span class="brand-tagline">ONE OBJECT. ONE HAND. ONE TRANSFORMATION.</span>
+            </div>
+
+            <div class="top-actions">
+                <button class="btn-pill" id="btn-gallery-toggle" onclick="toggleGalleryDrawer()">
+                    <span>🖼️</span> 12 Visual Deliverables
+                </button>
+                <button class="btn-pill" id="btn-specs-toggle" onclick="toggleSpecsDrawer()">
+                    <span>📐</span> CMF & Specs
+                </button>
+                <button class="btn-pill" id="btn-audio">
+                    <span>🔊</span> Mechanical Sound
+                </button>
+                <button class="btn-pill accent-orange" id="btn-deck-toggle" onclick="toggleDeckPanel()">
+                    <span>⚖️</span> Jury Deck Mode
+                </button>
+            </div>
+        </header>
+
+        <!-- Left Presentation Deck Panel (Jury Evaluation Mode) -->
+        <aside class="presentation-deck-panel glass-panel interactive" id="deck-panel">
+            <div class="deck-header">
+                <span class="slide-number-badge" id="slide-num">01 / 10</span>
+                <div class="slide-nav-buttons">
+                    <button class="slide-nav-btn" id="btn-prev-slide" title="Previous Slide (Left Arrow)">◀</button>
+                    <button class="slide-nav-btn" id="btn-next-slide" title="Next Slide (Right Arrow)">▶</button>
+                </div>
+            </div>
+
+            <div class="slide-progress-container">
+                <div class="slide-progress-fill" id="slide-progress-bar"></div>
+            </div>
+
+            <div class="slide-content-box">
+                <div class="slide-subtitle-text" id="slide-subtitle">EXECUTIVE SUMMARY</div>
+                <h2 class="slide-title-text" id="slide-title">ONEFORM // THE PERSONAL WORKSPACE</h2>
+                <p class="slide-body-text" id="slide-body">Loading evaluation content...</p>
+            </div>
+        </aside>
+
+        <!-- Right Camera Viewport Toolbar -->
+        <nav class="camera-toolbar glass-panel interactive" aria-label="Camera Presets">
+            <button class="cam-btn active" data-cam="hero" title="Hero 3/4 Perspective">📐</button>
+            <button class="cam-btn" data-cam="front" title="Front Elevation">🔲</button>
+            <button class="cam-btn" data-cam="side" title="Side Kinematics Profile">◨</button>
+            <button class="cam-btn" data-cam="top" title="Top Ergonomic Desk View">☵</button>
+            <button class="cam-btn" data-cam="macro" title="Macro Mechanism Close-up">🔍</button>
+            <button class="cam-btn" data-cam="exploded" title="Exploded Architecture View">💥</button>
+            <button class="cam-btn" data-cam="human" title="Human Scale Comparison">🧍</button>
+        </nav>
+
+        <!-- Bottom Mechanical Dock -->
+        <footer class="bottom-dock interactive">
+            
+            <!-- Quick State Switching Pills -->
+            <div class="state-selector-bar glass-panel">
+                <button class="state-tab active" data-state="carry">01 CARRY</button>
+                <button class="state-tab" data-state="deploy">02 DEPLOY</button>
+                <button class="state-tab" data-state="work">03 WORK</button>
+                <button class="btn-pill" id="btn-play-anim" style="margin-left: 12px; height: 32px; padding: 0 16px;">
+                    ▶ Play Cinematic
+                </button>
+            </div>
+
+            <!-- Scrubbable Transformation & Exploded View Controls -->
+            <div class="mechanical-timeline-panel glass-panel">
+                <div class="timeline-row">
+                    <span class="timeline-label">TRANSFORMATION:</span>
+                    <input type="range" class="custom-range-slider" id="transform-slider" min="0" max="100" value="0">
+                    <span class="timeline-value-box" id="transform-val">0%</span>
+                </div>
+
+                <div class="timeline-row">
+                    <span class="timeline-label">EXPLODED VIEW:</span>
+                    <input type="range" class="custom-range-slider" id="explode-slider" min="0" max="100" value="0">
+                    <span class="timeline-value-box" id="explode-val">0%</span>
+                </div>
+
+                <!-- Mode Toggles Bar -->
+                <div class="modes-bar">
+                    <button class="btn-pill" id="btn-cutaway" title="Toggle Cutaway X-Ray Shell (Key X)">
+                        <span>⚡</span> Cutaway X-Ray
+                    </button>
+                    <button class="btn-pill" id="btn-motion-path" title="Toggle Motion Arc & Force Vector (Key M)">
+                        <span>➰</span> One-Hand Trajectory
+                    </button>
+                    <button class="btn-pill" id="btn-human-scale" title="Toggle 178cm Human Proportion Model">
+                        <span>🧍</span> Human Scale
+                    </button>
+                </div>
+            </div>
+
+        </footer>
+
+    </div>
+
+    <!-- 12 Deliverables Showcase Drawer -->
+    <div class="gallery-drawer" id="gallery-drawer">
+        <div class="drawer-header">
+            <h2><span>🖼️</span> Final Deliverables Gallery (12 Core Product Assets)</h2>
+            <button class="btn-pill" onclick="toggleGalleryDrawer()">✕ Close Drawer</button>
+        </div>
+
+        <div class="gallery-grid">
+            <!-- 01 Hero Render -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/01_hero_product_render.jpg', '01 — HERO PRODUCT RENDER', 'Deployed workstation in an architectural airport transit lounge with warm evening lighting, matte graphite shell, and warm walnut desktop.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/01_hero_product_render.jpg" alt="Hero Product Render">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 01</span>
+                    <span class="gallery-title">Hero Product Render</span>
+                    <span class="gallery-sub">Deployed in modern airport lounge</span>
+                </div>
+            </div>
+
+            <!-- 02 Closed Carry State -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/02_closed_carry_state.jpg', '02 — CLOSED CARRY STATE', 'Ultra-premium compact travel case with telescopic handle, dual spinner wheels, and completely concealed transformation mechanism.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/02_closed_carry_state.jpg" alt="Closed Carry State">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 02</span>
+                    <span class="gallery-title">Closed Carry State</span>
+                    <span class="gallery-sub">Luggage mode (550 x 380 x 230 mm)</span>
+                </div>
+            </div>
+
+            <!-- 03 Transformation Sequence -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/03_transformation_sequence.jpg', '03 — TRANSFORMATION SEQUENCE', 'Four-phase mechanical progression: Closed Luggage → Release & Elevation → Linkage Engagement → Fully Deployed Workstation.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/03_transformation_sequence.jpg" alt="Transformation Sequence">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 03</span>
+                    <span class="gallery-title">Transformation Sequence</span>
+                    <span class="gallery-sub">Step-by-step mechanical progression</span>
+                </div>
+            </div>
+
+            <!-- 04 Fully Deployed Workspace -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/04_fully_deployed_workspace.jpg', '04 — FULLY DEPLOYED WORKSPACE', 'Detailed perspective showing warm walnut desk, integrated aluminum pen trough, smartphone dock, laptop deck, and lower quick-access tech storage.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/04_fully_deployed_workspace.jpg" alt="Fully Deployed Workspace">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 04</span>
+                    <span class="gallery-title">Fully Deployed Workspace</span>
+                    <span class="gallery-sub">Walnut worktop, laptop, cup & organizer</span>
+                </div>
+            </div>
+
+            <!-- 05 One-Hand User Interaction -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/05_one_hand_user_interaction.jpg', '05 — ONE-HAND USER INTERACTION', 'Single traveler guiding the center release handle with one hand. Minimalist motion arc shows effortless 4.5N counterbalanced lift.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/05_one_hand_user_interaction.jpg" alt="One-Hand User Interaction">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 05</span>
+                    <span class="gallery-title">One-Hand User Interaction</span>
+                    <span class="gallery-sub">Single continuous guided trajectory</span>
+                </div>
+            </div>
+
+            <!-- 06 Three-State Comparison -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/06_three_state_comparison.jpg', '06 — THREE-STATE COMPARISON', 'Slide-ready comparison graphic showing 01 CARRY, 02 DEPLOY, and 03 WORK connected by a thin transformation trajectory line.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/06_three_state_comparison.jpg" alt="Three-State Comparison">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 06</span>
+                    <span class="gallery-title">Three-State Comparison</span>
+                    <span class="gallery-sub">Jury presentation slide composition</span>
+                </div>
+            </div>
+
+            <!-- 07 Exploded Architecture View (3D Interactive) -->
+            <div class="gallery-card" onclick="trigger3DExploded()">
+                <div class="gallery-thumb-container" style="background: #14171C; display: flex; align-items: center; justify-content: center; font-size: 48px;">
+                    💥
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 07</span>
+                    <span class="gallery-title">Exploded Mechanical Architecture</span>
+                    <span class="gallery-sub">7-layer CAD disassembly in interactive 3D</span>
+                </div>
+            </div>
+
+            <!-- 08 Cutaway View (3D Interactive) -->
+            <div class="gallery-card" onclick="trigger3DCutaway()">
+                <div class="gallery-thumb-container" style="background: #14171C; display: flex; align-items: center; justify-content: center; font-size: 48px;">
+                    ⚡
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 08</span>
+                    <span class="gallery-title">Cutaway Internal View</span>
+                    <span class="gallery-sub">Translucent smoky polycarbonate X-Ray</span>
+                </div>
+            </div>
+
+            <!-- 09 Mechanism Macro Close-up -->
+            <div class="gallery-card" onclick="trigger3DMacro()">
+                <div class="gallery-thumb-container" style="background: #14171C; display: flex; align-items: center; justify-content: center; font-size: 48px;">
+                    🔍
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 09</span>
+                    <span class="gallery-title">Mechanism Close-Up</span>
+                    <span class="gallery-sub">4-bar pantograph, gas strut, over-center lock</span>
+                </div>
+            </div>
+
+            <!-- 10 Before / After Comparison -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/06_three_state_comparison.jpg', '10 — BEFORE / AFTER COMPARISON', 'Traditional approach (carrying suitcase + separate table + chair) vs. ONEFORM unified transformable architecture.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/06_three_state_comparison.jpg" alt="Before and After">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 10</span>
+                    <span class="gallery-title">Before / After Comparison</span>
+                    <span class="gallery-sub">Transform what you already carry</span>
+                </div>
+            </div>
+
+            <!-- 11 Material Close-ups -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/04_fully_deployed_workspace.jpg', '11 — MATERIAL CLOSE-UPS (CMF)', 'Matte graphite polycarbonate, dark brushed aluminum joints, sustainable walnut top, and deep maroon gasket seal.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/04_fully_deployed_workspace.jpg" alt="Material CMF">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 11</span>
+                    <span class="gallery-title">Material Palette Renders</span>
+                    <span class="gallery-sub">CMF: Polycarbonate, walnut & 6061-T6 aluminum</span>
+                </div>
+            </div>
+
+            <!-- 12 Cinematic Final Hero -->
+            <div class="gallery-card" onclick="openGalleryModal('assets/images/01_hero_product_render.jpg', '12 — CINEMATIC FINAL HERO', 'High-fidelity evening lounge render emphasizing manufacturing feasibility and premium luxury product design.')">
+                <div class="gallery-thumb-container">
+                    <img src="assets/images/01_hero_product_render.jpg" alt="Cinematic Final Hero">
+                </div>
+                <div class="gallery-info">
+                    <span class="gallery-num">ASSET 12</span>
+                    <span class="gallery-title">Cinematic Final Hero</span>
+                    <span class="gallery-sub">Master industrial design hero view</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Specifications & CMF Drawer -->
+    <div class="gallery-drawer" id="specs-drawer">
+        <div class="drawer-header">
+            <h2><span>📐</span> ONEFORM // Technical Specifications & CMF Architecture</h2>
+            <button class="btn-pill" onclick="toggleSpecsDrawer()">✕ Close</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; color: var(--text-secondary); line-height: 1.6; font-size: 14px;">
+            <div class="glass-panel" style="padding: 24px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 12px; font-family: var(--font-heading);">1. Dimensional Architecture</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                    <li><strong>Carry-On Mode:</strong> 550 mm (H) × 380 mm (W) × 230 mm (D)</li>
+                    <li><strong>Deployed Desk Height:</strong> 735 mm (ISO 9241 Ergonomic Standard)</li>
+                    <li><strong>Work Surface Span:</strong> 640 mm (W) × 480 mm (D) Bi-Fold Leaf</li>
+                    <li><strong>Packing Cavity:</strong> 38 Liters with padded 16" laptop compartment</li>
+                    <li><strong>Tare Weight:</strong> 4.18 kg (Carbon-reinforced frame)</li>
+                </ul>
+            </div>
+
+            <div class="glass-panel" style="padding: 24px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 12px; font-family: var(--font-heading);">2. Mechanical Intelligence</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                    <li><strong>Elevation Mechanism:</strong> Synchronized 4-Bar Pantograph Linkage</li>
+                    <li><strong>Kinematic Material:</strong> CNC-Machined Extruded 6061-T6 Aircraft Aluminum</li>
+                    <li><strong>Counterbalance:</strong> 120N Nitrogen Gas-Spring Hydraulic Strut</li>
+                    <li><strong>User Effort Required:</strong> &lt; 4.5 N (&lt; 0.5 kg single-handed lift)</li>
+                    <li><strong>Locking Mechanism:</strong> Over-Center Geometric Toggle Detent</li>
+                    <li><strong>Max Edge Load:</strong> 40 kg static load rating on front cantilever</li>
+                </ul>
+            </div>
+
+            <div class="glass-panel" style="padding: 24px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 12px; font-family: var(--font-heading);">3. Color, Material & Finish (CMF)</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                    <li><strong>Primary Shell:</strong> Matte Graphite Covestro Makrolon® Polycarbonate</li>
+                    <li><strong>Work Surface:</strong> FSC-Certified American Black Walnut with Satin Matte Oil</li>
+                    <li><strong>Linkages:</strong> Dark Gunmetal Brushed Anodized Metal</li>
+                    <li><strong>Accent Trim:</strong> Deep Maroon Silicone Gasket Seal (Pantone 19-1528)</li>
+                    <li><strong>Wheels:</strong> 360° Silent Dual-Caster Swivel with Nitrile Rubber Treads</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal for High-Resolution Deliverables -->
+    <div class="modal-overlay" id="gallery-modal" onclick="closeGalleryModal()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <button class="modal-close-btn" onclick="closeGalleryModal()">✕</button>
+            <div class="modal-img-container">
+                <img id="modal-img" src="" alt="Asset High Resolution View">
+            </div>
+            <div class="modal-meta-box">
+                <h2 id="modal-title">Deliverable Title</h2>
+                <p id="modal-desc">Deliverable Description</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Hint (Auto-dismisses) -->
+    <div class="keyboard-hints" id="keyboard-hints">
+        <div class="hint-row"><span class="hint-key">Space</span> Play / Pause Cinematic</div>
+        <div class="hint-row"><span class="hint-key">← →</span> Navigate Jury Slides</div>
+        <div class="hint-row"><span class="hint-key">X</span> Toggle Cutaway X-Ray</div>
+        <div class="hint-row"><span class="hint-key">M</span> Toggle Motion Trajectory</div>
+        <div class="hint-row"><span class="hint-key">F</span> Fullscreen Mode</div>
+    </div>
+
+    <!-- Vendor Dependencies (Local Fallback & Offline Ready) -->
+    <script src="assets/vendor/three.min.js"></script>
+    <script src="assets/vendor/OrbitControls.js"></script>
+    <script src="assets/vendor/tween.umd.js"></script>
+
+    <!-- ONEFORM Custom Scripts -->
+    <script src="assets/js/audio.js"></script>
+    <script src="assets/js/model.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script>
+        // --- Loading Screen Orchestration ---
+        (function () {
+            const fill = document.getElementById('loader-fill');
+            const status = document.getElementById('loader-status');
+            const screen = document.getElementById('loading-screen');
+
+            const stages = [
+                { pct: 20, text: 'Loading Three.js WebGL engine…' },
+                { pct: 40, text: 'Building procedural walnut grain texture…' },
+                { pct: 55, text: 'Assembling 7-layer kinematic model…' },
+                { pct: 70, text: 'Calculating 4-bar pantograph linkage…' },
+                { pct: 85, text: 'Initializing PBR materials & lighting…' },
+                { pct: 95, text: 'Rendering first frame…' },
+                { pct: 100, text: 'ONEFORM ready.' }
+            ];
+
+            let i = 0;
+            function tick() {
+                if (i < stages.length) {
+                    fill.style.width = stages[i].pct + '%';
+                    status.textContent = stages[i].text;
+                    i++;
+                    setTimeout(tick, 250 + Math.random() * 200);
+                } else {
+                    setTimeout(() => { screen.classList.add('hidden'); }, 400);
+                }
+            }
+            // Start loading animation immediately
+            setTimeout(tick, 300);
+        })();
+
+        // --- Drawer Toggles ---
+        function toggleGalleryDrawer() {
+            const drawer = document.getElementById('gallery-drawer');
+            drawer.classList.toggle('open');
+            document.getElementById('specs-drawer').classList.remove('open');
+        }
+
+        function toggleSpecsDrawer() {
+            const drawer = document.getElementById('specs-drawer');
+            drawer.classList.toggle('open');
+            document.getElementById('gallery-drawer').classList.remove('open');
+        }
+
+        function toggleDeckPanel() {
+            const deck = document.getElementById('deck-panel');
+            const btn = document.getElementById('btn-deck-toggle');
+            if (deck.style.display === 'none') {
+                deck.style.display = 'flex';
+                btn.classList.add('accent-orange');
+            } else {
+                deck.style.display = 'none';
+                btn.classList.remove('accent-orange');
+            }
+        }
+
+        function trigger3DExploded() {
+            toggleGalleryDrawer();
+            if (window.app) {
+                window.app.applyCameraPreset('exploded');
+            }
+        }
+
+        function trigger3DCutaway() {
+            toggleGalleryDrawer();
+            if (window.app) {
+                const cutawayToggle = document.getElementById('btn-cutaway');
+                if (cutawayToggle && !window.app.model.cutawayActive) cutawayToggle.click();
+                window.app.applyCameraPreset('hero');
+            }
+        }
+
+        function trigger3DMacro() {
+            toggleGalleryDrawer();
+            if (window.app) {
+                window.app.applyCameraPreset('macro');
+            }
+        }
+
+        // --- Fullscreen Toggle (F key) ---
+        window.addEventListener('keydown', function (e) {
+            if (e.key === 'f' || e.key === 'F') {
+                if (e.target.tagName === 'INPUT') return;
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                    document.exitFullscreen().catch(() => {});
+                }
+            }
+        });
+
+        // --- Auto-dismiss keyboard hints ---
+        setTimeout(function () {
+            const hints = document.getElementById('keyboard-hints');
+            if (hints) hints.classList.add('dismissed');
+        }, 12000);
+    </script>
+</body>
+</html>
